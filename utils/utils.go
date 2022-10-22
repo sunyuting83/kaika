@@ -6,7 +6,6 @@ import (
 	"crypto/cipher"
 	"crypto/md5"
 	"errors"
-	"io/ioutil"
 	LevelDB "kaika/Leveldb"
 	"math/rand"
 	"net/http"
@@ -78,7 +77,7 @@ func CheckConfig(OS, CurrentPath string) (conf *Config, err error) {
 	ConfigFile := strings.Join([]string{CurrentPath, "config.yaml"}, LinkPathStr)
 
 	var confYaml *Config
-	yamlFile, err := ioutil.ReadFile(ConfigFile)
+	yamlFile, err := os.ReadFile(ConfigFile)
 	if err != nil {
 		return confYaml, errors.New("读取配置文件出错\n10秒后程序自动关闭")
 	}
@@ -89,13 +88,13 @@ func CheckConfig(OS, CurrentPath string) (conf *Config, err error) {
 	if len(confYaml.Port) <= 0 {
 		confYaml.Port = "13002"
 		config, _ := yaml.Marshal(&confYaml)
-		ioutil.WriteFile(ConfigFile, config, 0644)
+		os.WriteFile(ConfigFile, config, 0644)
 	}
 	if len(confYaml.SECRET_KEY) <= 0 {
 		secret_key := randSeq(32)
 		confYaml.SECRET_KEY = secret_key
 		config, _ := yaml.Marshal(&confYaml)
-		ioutil.WriteFile(ConfigFile, config, 0644)
+		os.WriteFile(ConfigFile, config, 0644)
 	}
 	return confYaml, nil
 }
