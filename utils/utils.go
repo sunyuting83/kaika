@@ -3,11 +3,11 @@ package utils
 import (
 	"errors"
 	"io/ioutil"
+	LevelDB "kaika/Leveldb"
 	"math/rand"
 	"net/http"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"time"
 
@@ -39,19 +39,11 @@ func VerifyMiddleware() gin.HandlerFunc {
 
 // CheckToken is a check token function
 func CheckToken(a string) bool {
-	OS := runtime.GOOS
-	LinkPathStr := "/"
-	if OS == "windows" {
-		LinkPathStr = "\\"
-	}
-	CurrentPath, _ := GetCurrentPath()
-
-	TokenFile := strings.Join([]string{CurrentPath, ".token"}, LinkPathStr)
-	tokenFile, err := ioutil.ReadFile(TokenFile)
+	token, err := LevelDB.Get(a)
 	if err != nil {
 		return false
 	}
-	if a == string(tokenFile) {
+	if a == string(token) {
 		return true
 	}
 	return false

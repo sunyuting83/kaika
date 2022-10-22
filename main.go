@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	LevelDB "kaika/Leveldb"
 	orm "kaika/database"
 	"kaika/router"
 	"kaika/utils"
@@ -27,6 +28,7 @@ func main() {
 	// gin.SetMode(gin.ReleaseMode)
 	gin.SetMode(gin.DebugMode)
 	defer orm.Eloquent.Close()
+	defer LevelDB.LevelDB.Close()
 	app := router.InitRouter(confYaml.SECRET_KEY)
 
 	app.Run(strings.Join([]string{":", confYaml.Port}, ""))

@@ -14,3 +14,9 @@ type Admin struct {
 func (Admin) TableName() string {
 	return "admin"
 }
+
+// add admin
+func (admin *Admin) Insert() error {
+	Eloquent.Create(&admin)
+	return nil
+}
