@@ -20,3 +20,11 @@ func (admin *Admin) Insert() error {
 	Eloquent.Create(&admin)
 	return nil
 }
+
+// login
+func (admin *Admin) CheckAdminLogin(username, password string) (admins Admin, err error) {
+	if err = Eloquent.First(&admins, "username = ? AND status = ? AND password = ?", username, 0, password).Error; err != nil {
+		return
+	}
+	return
+}

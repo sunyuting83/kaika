@@ -1,6 +1,10 @@
 package utils
 
 import (
+	"bytes"
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/md5"
 	"errors"
 	"io/ioutil"
 	LevelDB "kaika/Leveldb"
@@ -25,8 +29,10 @@ func VerifyMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.GetHeader("Authorization")
 		if len(token) > 10 {
+			secret_key, _ := c.Get("SECRET_KEY")
+			SECRET_KEY := secret_key.(string)
 			token = token[7:]
-			if CheckToken(token) {
+			if CheckToken(SECRET_KEY, token) {
 				c.Next()
 			} else {
 				c.AbortWithStatus(403)
@@ -38,12 +44,16 @@ func VerifyMiddleware() gin.HandlerFunc {
 }
 
 // CheckToken is a check token function
-func CheckToken(a string) bool {
-	token, err := LevelDB.Get(a)
+func CheckToken(s, a string) bool {
+	AEStoken, err := AesDecrypt([]byte(a), []byte(s))
 	if err != nil {
 		return false
 	}
-	if a == string(token) {
+	token, err := LevelDB.Get(string(AEStoken))
+	if err != nil {
+		return false
+	}
+	if string(token) == string(AEStoken) {
 		return true
 	}
 	return false
@@ -154,4 +164,54 @@ func GetDateTime() (int64, int64, int64) {
 
 	//返回当天0点和23点59分的时间戳
 	return startTime.Unix(), end.Unix(), yTime.Unix()
+}
+
+func MD5(a string) string {
+	data := []byte(a)
+	hash := md5.New()
+	return string(hash.Sum(data))
+}
+
+// PKCS5Padding PKCS5Padding
+func PKCS5Padding(ciphertext []byte, blockSize int) []byte {
+	padding := blockSize - len(ciphertext)%blockSize
+	padtext := bytes.Repeat([]byte{byte(padding)}, padding)
+	return append(ciphertext, padtext...)
+}
+
+// PKCS5UnPadding PKCS5UnPadding
+func PKCS5UnPadding(origData []byte) []byte {
+	length := len(origData)
+	unpadding := int(origData[length-1])
+	return origData[:(length - unpadding)]
+}
+
+// AesEncrypt AesEncrypt
+func AesEncrypt(origData, key []byte) ([]byte, error) {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+
+	blockSize := block.BlockSize()
+	origData = PKCS5Padding(origData, blockSize)
+	blockMode := cipher.NewCBCEncrypter(block, key[:blockSize])
+	crypted := make([]byte, len(origData))
+	blockMode.CryptBlocks(crypted, origData)
+	return crypted, nil
+}
+
+// AesDecrypt AesDecrypt
+func AesDecrypt(crypted, key []byte) ([]byte, error) {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+
+	blockSize := block.BlockSize()
+	blockMode := cipher.NewCBCDecrypter(block, key[:blockSize])
+	origData := make([]byte, len(crypted))
+	blockMode.CryptBlocks(origData, crypted)
+	origData = PKCS5UnPadding(origData)
+	return origData, nil
 }
