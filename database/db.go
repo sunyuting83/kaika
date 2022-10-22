@@ -17,8 +17,11 @@ func InitDB(d string) {
 	dbName := strings.Join([]string{d, "data/data.sqlite"}, "/")
 	// fmt.Println(dbName)
 	Eloquent, _ = gorm.Open("sqlite3", dbName)
-	if !Eloquent.HasTable(&ImgList{}) {
-		if err := Eloquent.CreateTable(&ImgList{}).Error; err != nil {
+	if !Eloquent.HasTable(&Admin{}) && !Eloquent.HasTable(&Card{}) {
+		if err := Eloquent.CreateTable(&Admin{}).Error; err != nil {
+			log.Fatal(err)
+		}
+		if err := Eloquent.CreateTable(&Card{}).Error; err != nil {
 			log.Fatal(err)
 		}
 	}

@@ -1,2 +1,4 @@
 data/
 go.sum
+cache/
+database/watchimg.go.1
