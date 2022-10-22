@@ -5,6 +5,8 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/md5"
+	"encoding/base64"
+	"encoding/hex"
 	"errors"
 	LevelDB "kaika/Leveldb"
 	"math/rand"
@@ -27,8 +29,8 @@ type Config struct {
 func VerifyMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.GetHeader("Authorization")
-		if len(token) > 10 {
-			secret_key, _ := c.Get("SECRET_KEY")
+		if len(token) == 71 {
+			secret_key, _ := c.Get("secret_key")
 			SECRET_KEY := secret_key.(string)
 			token = token[7:]
 			if CheckToken(SECRET_KEY, token) {
@@ -44,7 +46,7 @@ func VerifyMiddleware() gin.HandlerFunc {
 
 // CheckToken is a check token function
 func CheckToken(s, a string) bool {
-	AEStoken, err := AesDecrypt([]byte(a), []byte(s))
+	AEStoken, err := DecryptByAes(a, []byte(s))
 	if err != nil {
 		return false
 	}
@@ -119,14 +121,6 @@ func CORSMiddleware() gin.HandlerFunc {
 	}
 }
 
-// SetConfigMiddleWare set config
-func SetConfigMiddleWare(SECRET_KEY string) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Set("secret_key", SECRET_KEY)
-		c.Writer.Status()
-	}
-}
-
 func randSeq(n int) string {
 	var letters = []rune("abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 	b := make([]rune, n)
@@ -167,50 +161,89 @@ func GetDateTime() (int64, int64, int64) {
 
 func MD5(a string) string {
 	data := []byte(a)
-	hash := md5.New()
-	return string(hash.Sum(data))
+	md5Ctx := md5.New()
+	md5Ctx.Write(data)
+	cipherStr := md5Ctx.Sum(nil)
+	return hex.EncodeToString(cipherStr)
 }
 
-// PKCS5Padding PKCS5Padding
-func PKCS5Padding(ciphertext []byte, blockSize int) []byte {
-	padding := blockSize - len(ciphertext)%blockSize
-	padtext := bytes.Repeat([]byte{byte(padding)}, padding)
-	return append(ciphertext, padtext...)
+// pkcs7Padding 填充
+func pkcs7Padding(data []byte, blockSize int) []byte {
+	//判断缺少几位长度。最少1，最多 blockSize
+	padding := blockSize - len(data)%blockSize
+	//补足位数。把切片[]byte{byte(padding)}复制padding个
+	padText := bytes.Repeat([]byte{byte(padding)}, padding)
+	return append(data, padText...)
 }
 
-// PKCS5UnPadding PKCS5UnPadding
-func PKCS5UnPadding(origData []byte) []byte {
-	length := len(origData)
-	unpadding := int(origData[length-1])
-	return origData[:(length - unpadding)]
+// pkcs7UnPadding 填充的反向操作
+func pkcs7UnPadding(data []byte) ([]byte, error) {
+	length := len(data)
+	if length == 0 {
+		return nil, errors.New("加密字符串错误！")
+	}
+	//获取填充的个数
+	unPadding := int(data[length-1])
+	return data[:(length - unPadding)], nil
 }
 
-// AesEncrypt AesEncrypt
-func AesEncrypt(origData, key []byte) ([]byte, error) {
+// AesEncrypt 加密
+func AesEncrypt(data []byte, key []byte) ([]byte, error) {
+	//创建加密实例
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
 	}
-
+	//判断加密快的大小
 	blockSize := block.BlockSize()
-	origData = PKCS5Padding(origData, blockSize)
+	//填充
+	encryptBytes := pkcs7Padding(data, blockSize)
+	//初始化加密数据接收切片
+	crypted := make([]byte, len(encryptBytes))
+	//使用cbc加密模式
 	blockMode := cipher.NewCBCEncrypter(block, key[:blockSize])
-	crypted := make([]byte, len(origData))
-	blockMode.CryptBlocks(crypted, origData)
+	//执行加密
+	blockMode.CryptBlocks(crypted, encryptBytes)
 	return crypted, nil
 }
 
-// AesDecrypt AesDecrypt
-func AesDecrypt(crypted, key []byte) ([]byte, error) {
+// AesDecrypt 解密
+func AesDecrypt(data []byte, key []byte) ([]byte, error) {
+	//创建实例
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
 	}
-
+	//获取块的大小
 	blockSize := block.BlockSize()
+	//使用cbc
 	blockMode := cipher.NewCBCDecrypter(block, key[:blockSize])
-	origData := make([]byte, len(crypted))
-	blockMode.CryptBlocks(origData, crypted)
-	origData = PKCS5UnPadding(origData)
-	return origData, nil
+	//初始化解密数据接收切片
+	crypted := make([]byte, len(data))
+	//执行解密
+	blockMode.CryptBlocks(crypted, data)
+	//去除填充
+	crypted, err = pkcs7UnPadding(crypted)
+	if err != nil {
+		return nil, err
+	}
+	return crypted, nil
+}
+
+// EncryptByAes Aes加密 后 base64 再加
+func EncryptByAes(data, PwdKey []byte) (string, error) {
+	res, err := AesEncrypt(data, PwdKey)
+	if err != nil {
+		return "", err
+	}
+	return base64.StdEncoding.EncodeToString(res), nil
+}
+
+// DecryptByAes Aes 解密
+func DecryptByAes(data string, PwdKey []byte) ([]byte, error) {
+	dataByte, err := base64.StdEncoding.DecodeString(data)
+	if err != nil {
+		return nil, err
+	}
+	return AesDecrypt(dataByte, PwdKey)
 }

@@ -22,7 +22,7 @@ func InitDB(d string) {
 		newTime := time.Now().Unix()
 		var admin Admin
 		admin.Username = "sleepsun"
-		admin.Password = "b346ed32af6bb2b4023f0fbd32866a81"
+		admin.Password = "4fc46d0477954d80a999cc6501193bff"
 		admin.Status = 0
 		admin.UpdateTime = newTime
 		admin.CreatedTime = newTime
