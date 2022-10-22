@@ -81,7 +81,7 @@ func Sgin(c *gin.Context) {
 	T := time.Now().Format("202210100000")
 	token := utils.MD5(strings.Join([]string{login.Username, login.Password, T}, ""))
 	// var ttl int64 = 1000 * 60 * 60 * 24 * 90
-	var ttl int64 = 1000 * 10
+	var ttl int64 = 60 * 60 * 24 * 90 // ttl以秒为单位
 	// ASE加密token
 	TOKEN, err := utils.EncryptByAes([]byte(token), []byte(SECRET_KEY))
 	if err != nil {

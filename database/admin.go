@@ -28,3 +28,23 @@ func (admin *Admin) CheckAdminLogin(username, password string) (admins Admin, er
 	}
 	return
 }
+
+// Check UserName
+func (admin *Admin) CheckUserName(username string) (admins Admin, err error) {
+	if err = Eloquent.First(&admins, "username = ?", username).Error; err != nil {
+		return
+	}
+	return
+}
+
+// Reset Password
+func (admin *Admin) ResetPassword(username string) (admins Admin, err error) {
+	// time.Sleep(time.Duration(100) * time.Millisecond)
+	if err = Eloquent.First(&admins, "username = ?", username).Error; err != nil {
+		return
+	}
+	if err = Eloquent.Model(&admins).Updates(&admin).Error; err != nil {
+		return
+	}
+	return
+}
