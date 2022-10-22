@@ -48,3 +48,9 @@ func (admin *Admin) ResetPassword(username string) (admins Admin, err error) {
 	}
 	return
 }
+
+// Delete Admin
+func (admin *Admin) DeleteOne(username string) {
+	// time.Sleep(time.Duration(100) * time.Millisecond)
+	Eloquent.Where("username = ?", username).Delete(&admin)
+}
