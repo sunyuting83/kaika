@@ -53,7 +53,7 @@ func CheckConfig(OS, CurrentPath string) (conf *Config, err error) {
 		os.WriteFile(ConfigFile, config, 0644)
 	}
 	if len(confYaml.SECRET_KEY) <= 0 {
-		secret_key := randSeq(32)
+		secret_key := RandSeq(32)
 		confYaml.SECRET_KEY = secret_key
 		config, _ := yaml.Marshal(&confYaml)
 		os.WriteFile(ConfigFile, config, 0644)
@@ -81,7 +81,7 @@ func CORSMiddleware() gin.HandlerFunc {
 	}
 }
 
-func randSeq(n int) string {
+func RandSeq(n int) string {
 	var letters = []rune("abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 	b := make([]rune, n)
 	for i := range b {

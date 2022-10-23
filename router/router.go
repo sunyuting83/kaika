@@ -3,6 +3,7 @@ package router
 import (
 	controller "kaika/controller"
 	Admin "kaika/controller/Admin"
+	Card "kaika/controller/Card"
 	utils "kaika/utils"
 
 	"github.com/gin-gonic/gin"
@@ -28,6 +29,7 @@ func InitRouter(SECRET_KEY string) *gin.Engine {
 		api.PUT("/repassword", utils.VerifyMiddleware(), Admin.ResetPassword)
 		api.DELETE("/deladmin", utils.VerifyMiddleware(), Admin.DeleteAdmin)
 		api.POST("/login", Admin.Sgin)
+		api.POST("/creatdcard", utils.VerifyMiddleware(), Card.CreateCard)
 	}
 
 	return router
