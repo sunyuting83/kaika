@@ -41,6 +41,20 @@ func Sgin(c *gin.Context) {
 		})
 		return
 	}
+	secret_key, _ := c.Get("secret_key")
+	SECRET_KEY := secret_key.(string)
+
+	PASSWD := utils.MD5(strings.Join([]string{form.Password, SECRET_KEY}, ""))
+	var admin database.Admin
+	login, err := admin.CheckAdminLogin(form.UserName, PASSWD)
+	// fmt.Println(login)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"status":  1,
+			"message": "登陆失败",
+		})
+		return
+	}
 	user, err := LevelDB.Get(form.UserName)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
@@ -49,8 +63,6 @@ func Sgin(c *gin.Context) {
 		})
 		return
 	}
-	secret_key, _ := c.Get("secret_key")
-	SECRET_KEY := secret_key.(string)
 	if user != nil {
 		TOKEN, err := utils.EncryptByAes([]byte(user), []byte(SECRET_KEY))
 		if err != nil {
@@ -64,17 +76,6 @@ func Sgin(c *gin.Context) {
 			"status":  0,
 			"message": "登陆成功",
 			"token":   TOKEN,
-		})
-		return
-	}
-	PASSWD := utils.MD5(strings.Join([]string{form.Password, SECRET_KEY}, ""))
-	var admin database.Admin
-	login, err := admin.CheckAdminLogin(form.UserName, PASSWD)
-	// fmt.Println(login)
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"status":  1,
-			"message": "登陆失败",
 		})
 		return
 	}
