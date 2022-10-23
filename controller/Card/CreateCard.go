@@ -34,7 +34,8 @@ func CreateCard(c *gin.Context) {
 		})
 		return
 	}
-	if form.DateTime < 86400 {
+	// 86400
+	if form.DateTime < 120 {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"status":  1,
 			"message": "不能小于1天",

@@ -23,3 +23,9 @@ func (card *Card) Insert() (id int64, err error) {
 	}
 	return
 }
+
+// Delete Card
+func (card *Card) DeleteCard(id string) {
+	// time.Sleep(time.Duration(100) * time.Millisecond)
+	Eloquent.Where("id = ?", id).Delete(&card)
+}
