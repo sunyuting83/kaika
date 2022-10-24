@@ -4,3 +4,7 @@ cache/
 database/watchimg.go.1
 Cache/
 server
+card/.gitignore
+card/README.md
+card/yarn.lock
+card/node_modules/
