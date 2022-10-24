@@ -30,6 +30,7 @@ func InitRouter(SECRET_KEY string) *gin.Engine {
 		api.DELETE("/deladmin", utils.VerifyMiddleware(), Admin.DeleteAdmin)
 		api.POST("/login", Admin.Sgin)
 		api.POST("/creatdcard", utils.VerifyMiddleware(), Card.CreateCard)
+		api.GET("/cardlist", utils.VerifyMiddleware(), Card.CardList)
 		api.GET("/login", Card.Login)
 		api.GET("/check", Card.CheckCard)
 	}

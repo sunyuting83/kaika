@@ -25,8 +25,8 @@ func main() {
 		os.Exit(0)
 	}
 	orm.InitDB(CurrentPath)
-	// gin.SetMode(gin.ReleaseMode)
-	gin.SetMode(gin.DebugMode)
+	gin.SetMode(gin.ReleaseMode)
+	// gin.SetMode(gin.DebugMode)
 	defer orm.Eloquent.Close()
 	defer LevelDB.LevelDB.Close()
 	app := router.InitRouter(confYaml.SECRET_KEY)

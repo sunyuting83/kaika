@@ -29,3 +29,34 @@ func (card *Card) DeleteCard(id string) {
 	// time.Sleep(time.Duration(100) * time.Millisecond)
 	Eloquent.Where("id = ?", id).Delete(&card)
 }
+
+// Get Count
+func (card *Card) GetCount() (count int64, err error) {
+	if err = Eloquent.Model(&card).Count(&count).Error; err != nil {
+		return
+	}
+	return
+}
+
+// Card List
+func (card *Card) GetCardList(page int64) (cards []Card, err error) {
+	p := makePage(page)
+	if err = Eloquent.
+		Select("id, card, updatetime, createdtime").
+		Order("id desc").
+		Limit(100).Offset(p).
+		Find(&cards).Error; err != nil {
+		return
+	}
+	return
+}
+
+// makePage make page
+func makePage(p int64) int64 {
+	p = p - 1
+	if p <= 0 {
+		p = 0
+	}
+	page := p * 100
+	return page
+}

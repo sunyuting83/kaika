@@ -35,7 +35,7 @@ func CreateCard(c *gin.Context) {
 		return
 	}
 	// 86400
-	if form.DateTime < 120 {
+	if form.DateTime < 86400 {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"status":  1,
 			"message": "不能小于1天",
@@ -45,7 +45,8 @@ func CreateCard(c *gin.Context) {
 	secret_key, _ := c.Get("secret_key")
 	SECRET_KEY := secret_key.(string)
 	var (
-		card *database.Card
+		card     *database.Card
+		cardList []string
 	)
 	for i := 0; i < form.Card; i++ {
 		T := time.Now().Unix()
@@ -58,10 +59,12 @@ func CreateCard(c *gin.Context) {
 		ID := strconv.FormatInt(id, 10)
 		value := strings.Join([]string{"nil", ID}, "----")
 		LevelDB.Set(Card, value, form.DateTime)
+		cardList = append(cardList, Card)
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  0,
 		"message": "开卡成功",
+		"data":    cardList,
 	})
 }
