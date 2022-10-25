@@ -11,7 +11,7 @@ const constantRoutes = [
     component: AppIndex
   },
   {
-    path: '/',
+    path: '/manage',
     name: 'manage',
     component: AppManage
   }

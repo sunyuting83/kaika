@@ -39,7 +39,7 @@
           <div class="field has-addons">
             <div class="control is-expanded">
               <div class="control has-icons-left has-icons-right">
-                <input class="input" type="code" placeholder="请输入验证码" @input="checkCode" />
+                <input class="input" type="code" maxlength="4" v-model="form.code" placeholder="请输入验证码" @input="validateCode" />
                 <span class="icon is-small is-left">
                   <i class="fa fa-qrcode"></i>
                 </span>
@@ -66,6 +66,7 @@
 </template>
 
 <script>
+import returnCitySN from 'returnCitySN'
 import Config from '@/helper/config'
 import Fetch from '@/helper/fetch'
 import Identify from "@/components/Other/Identify"
@@ -93,12 +94,19 @@ export default {
     };
   },
   mounted() {
-    // 初始
-    this.identifyCode = "";
-    this.makeCode(this.identifyCodes, 4);
+    this.identifyCode = ""
+    this.makeCode(this.identifyCodes, 4)
+    this.checkLogin()
+    localStorage.setItem("ip",returnCitySN.cip)
   },
   methods: {
-    // 确认
+    async checkLogin(){
+      const token = localStorage.getItem("token")
+      const data = await Fetch(Config.Api.checklogin, {}, "get", token)
+      if (data.status === 0) {
+        this.$router.push("manage")
+      }
+    },
     async onSubmit() {
       const { username, password } = this.form
       if (username.length >= 4 && password.length >= 8 && this.validateCode()) {
@@ -108,7 +116,8 @@ export default {
         }
         const d = await Fetch(Config.Api.login, data, "post")
         if (d.status === 0) {
-          this.$router.push("/manage")
+          localStorage.setItem("token", d.token)
+          this.$router.push("manage")
         }else{
           this.openerr.message = d.message
           this.openerr.active = true
@@ -165,16 +174,6 @@ export default {
     },
     closErr(){
       this.openerr.active = false
-    },
-    checkCode(e){
-      let code = this.form.code
-      const l = code.length
-      if (e.data == null) {
-        this.form.code = code.slice(0, l - 1)
-      }else{
-        this.form.code = code + e.data
-      }
-      this.validateCode()
     }
   }
 }
