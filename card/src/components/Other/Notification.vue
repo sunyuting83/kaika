@@ -1,7 +1,7 @@
 <template>
-  <div class="notification is-danger error" :style="{'top':hoverTop+'px'}" v-if="props.active">
-    <button class="delete" @click="props.closErr"></button>
-    <p>{{props.message}}</p>
+  <div class="notification is-danger error" :style="{'top':hoverTop+'px'}" v-if="this.showData.active">
+    <button class="delete" @click="closErr"></button>
+    <p>{{this.showData.message}}</p>
   </div>
 </template>
 
@@ -10,16 +10,15 @@ import { reactive, toRefs, watch, defineComponent } from 'vue'
 export default defineComponent ({
   name: 'NotIfication',
   props: {
-    active:{
-      type: Boolean,
-      default: false
-    },
-    message: {
-      type: String,
-      default: ""
-    },
-    closErr: {
-      type: Function
+    showData:{
+      active:{
+        type: Boolean,
+        default: false
+      },
+      message: {
+        type: String,
+        default: ""
+      }
     }
   },
   emits: ["update:active","update:message"],
@@ -27,11 +26,11 @@ export default defineComponent ({
     let _data = reactive({
       hoverTop: 0
     })
-    watch(() => props.active,(newValue) => {
+    watch(() => props.showData.active,(newValue) => {
       context.emit("update:active", newValue)
       openError()
     })
-    watch(() => props.message,(newValue) => {
+    watch(() => props.showData.message,(newValue) => {
       context.emit("update:message", newValue)
     })
     watch(() => _data.hoverTop,(newValue) => {
@@ -41,14 +40,19 @@ export default defineComponent ({
       const scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop;
       // context.emit("update:hoverTop", scrollTop)
       _data.hoverTop = scrollTop
-      const c = props.closErr
+      const _this = props
       setTimeout(function(){
-        c()
+        _this.showData.active = false
       },1500)
+    }
+    const closErr = () => {
+      const _this = props
+      _this.showData.message = ""
+      _this.showData.active = false
     }
     return {
       ...toRefs(_data),
-      props,
+      closErr
     }
   }
 })

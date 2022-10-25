@@ -76,6 +76,7 @@ func Sgin(c *gin.Context) {
 			"status":  0,
 			"message": "登陆成功",
 			"token":   TOKEN,
+			"user":    login.Username,
 		})
 		return
 	}
@@ -98,5 +99,6 @@ func Sgin(c *gin.Context) {
 		"status":  0,
 		"message": "登陆成功",
 		"token":   TOKEN,
+		"user":    login.Username,
 	})
 }

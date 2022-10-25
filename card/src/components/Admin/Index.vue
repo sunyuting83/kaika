@@ -1,54 +1,6 @@
 <template>
   <div>
-    <nav class="navbar is-white">
-      <div class="container">
-        <div class="navbar-brand">
-          <span class="navbar-item brand-text">
-            <img :src="logo">Card Manage
-          </span>
-        </div>
-        <div id="navMenu" class="navbar-menu">
-          <div class="navbar-start">
-            <a class="navbar-item" href="admin.html">
-              首页
-            </a>
-            <a class="navbar-item" href="admin.html">
-              卡开记录
-            </a>
-          </div>
-        </div>
-        <div class="navbar-end">
-          <div class="navbar-item">
-            <div class="field is-grouped">
-                <div class="navbar-item has-dropdown is-hoverable">
-                  <span class="navbar-link">
-                    <span class="icon">
-                      <i class="fa fa-user-circle-o"></i>
-                    </span>
-                    <span>
-                    用户中心
-                    </span>
-                  </span>
-              
-                  <div class="navbar-dropdown">
-                    <a class="navbar-item">
-                      修改密码
-                    </a>
-                    <a class="navbar-item">
-                      管理员管理
-                    </a>
-                    <hr class="navbar-divider">
-                    <a class="navbar-item">
-                      退出登陆
-                    </a>
-                  </div>
-                </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </nav>
-    <!-- END NAV -->
+    <ManageHeader></ManageHeader>
     <div class="container">
       <section class="hero is-info welcome is-small">
         <div class="hero-body">
@@ -91,61 +43,7 @@
         </div>
       </section>
       <div class="columns">
-        <div class="column is-6">
-          <div class="card">
-            <header class="card-header">
-              <p class="card-header-title">
-                开新卡
-              </p>
-            </header>
-            <div class="card-content">
-              <div class="content">
-                <div class="field has-addons">
-                  <p class="control is-expanded">
-                    <input class="input" type="number" placeholder="开卡时间">
-                  </p>
-                  <p class="control">
-                    <span class="select">
-                      <select>
-                        <option value="m">月</option>
-                        <option value="d">天</option>
-                        <option value="y">年</option>
-                      </select>
-                    </span>
-                  </p>
-                  <p class="control is-expanded">
-                    <input class="input" type="number" placeholder="开卡数量">
-                  </p>
-                  <p class="control">
-                    <a class="button is-info">
-                      开卡
-                    </a>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="card mt-3">
-            <header class="card-header">
-              <p class="card-header-title">
-                搜索卡
-              </p>
-            </header>
-            <div class="card-content">
-              <div class="content">
-                <div class="control has-icons-left has-icons-right">
-                  <input class="input is-large" type="text" placeholder="">
-                  <span class="icon is-medium is-left">
-                    <i class="fa fa-search"></i>
-                  </span>
-                  <span class="icon is-medium is-right">
-                    <i class="fa fa-check"></i>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <CreateCard></CreateCard>
 
         <div class="column is-6">
           <div class="card events-card">
@@ -155,8 +53,9 @@
               </p>
             </header>
             <div class="card-content">
-              <div class="content">
-                <table class="table is-striped is-clipped">
+              <div class="content has-text-centered	min-heights">
+                <img :src="nothong" />
+                <!-- <table class="table is-striped is-clipped">
                   <tbody>
                     <tr>
                       <td>73A90ACAAE2B1CCC0E969709665BC62F</td>
@@ -165,17 +64,17 @@
                       <td>73A90ACAAE2B1CCC0E969709665BC62F</td>
                     </tr>
                   </tbody>
-                </table>
+                </table> -->
               </div>
             </div>
-            <footer class="card-footer">
+            <!-- <footer class="card-footer">
               <a class="card-footer-item is-size-7" @click="copyAccount">
                 <span class="level-item" v-show="check">
                   <span class="icon is-small"><i class="fa fa-check"></i></span>
                 </span>
                 复制到剪切板
               </a>
-            </footer>
+            </footer> -->
           </div>
         </div>
       </div>
@@ -185,11 +84,18 @@
 
 <script>
 import Fetch from '@/helper/fetch'
+import CheckLogin from '@/helper/checkLogin'
 import Config from '@/helper/config'
+import setStorage from '@/helper/setStorage'
+
+import ManageHeader from './Header'
+import CreateCard from './CreateCard'
+
 import useClipboard from 'vue-clipboard3'
 const { toClipboard } = useClipboard()
 export default {
   name: 'AppManage',
+  components: { ManageHeader, CreateCard },
   data(){
     return {
       jt: "破罐子不能破摔，得使劲摔！",
@@ -203,10 +109,17 @@ export default {
       check: false
     }
   },
-  mounted(){
-    this.ip = Config.IP
-    this.logo = Config.images[2]
-    this.GetJT()
+  async mounted(){
+    const data = await CheckLogin()
+    if (data == 0) {
+      this.ip = Config.IP
+      this.logo = Config.images[2]
+      this.nothong = Config.images[3]
+      this.GetJT()
+    }else{
+      setStorage(false)
+      this.$router.push("/")
+    }
   },
   methods:{
     async GetJT(){
@@ -231,5 +144,8 @@ export default {
 <style scoped>
 nav.navbar {
   border-top: 4px solid #276cda;
+}
+.min-heights {
+  min-height: 14rem;
 }
 </style>

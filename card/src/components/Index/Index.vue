@@ -58,9 +58,7 @@
       </div>
     </div>
     <NotIfication
-      :message="openerr.message"
-      :active="openerr.active"
-      :closErr="closErr">
+      :showData="openerr">
     </NotIfication>
   </div>
 </template>
@@ -69,6 +67,8 @@
 import returnCitySN from 'returnCitySN'
 import Config from '@/helper/config'
 import Fetch from '@/helper/fetch'
+import setStorage from '@/helper/setStorage'
+import CheckLogin from '@/helper/checkLogin'
 import Identify from "@/components/Other/Identify"
 import NotIfication from "@/components/Other/Notification"
 export default {
@@ -93,20 +93,17 @@ export default {
       }
     };
   },
-  mounted() {
-    this.identifyCode = ""
-    this.makeCode(this.identifyCodes, 4)
-    this.checkLogin()
-    localStorage.setItem("ip",returnCitySN.cip)
+  async mounted() {
+    const data = await CheckLogin()
+    if (data === 1) {
+      this.identifyCode = ""
+      this.makeCode(this.identifyCodes, 4)
+      localStorage.setItem("ip",returnCitySN.cip)
+    }else {
+      this.$router.push("manage")
+    }
   },
   methods: {
-    async checkLogin(){
-      const token = localStorage.getItem("token")
-      const data = await Fetch(Config.Api.checklogin, {}, "get", token)
-      if (data.status === 0) {
-        this.$router.push("manage")
-      }
-    },
     async onSubmit() {
       const { username, password } = this.form
       if (username.length >= 4 && password.length >= 8 && this.validateCode()) {
@@ -116,13 +113,14 @@ export default {
         }
         const d = await Fetch(Config.Api.login, data, "post")
         if (d.status === 0) {
-          localStorage.setItem("token", d.token)
+          setStorage(true, d.token, d.user)
           this.$router.push("manage")
         }else{
           this.openerr.message = d.message
           this.openerr.active = true
           this.form.codeErr = "1"
           this.form.code = ""
+          setStorage(false)
           this.refreshCode()
         }
       }
