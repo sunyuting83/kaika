@@ -1,5 +1,5 @@
 <template>
-  <div class="hero is-fullheight is-primary">
+  <div class="hero is-fullheight is-primary gradient">
     <div class="hero-body">
       <div class="container has-text-centered">
         <div class="column is-8 is-offset-2">
@@ -64,7 +64,6 @@
 </template>
 
 <script>
-import returnCitySN from 'returnCitySN'
 import Config from '@/helper/config'
 import Fetch from '@/helper/fetch'
 import setStorage from '@/helper/setStorage'
@@ -89,7 +88,8 @@ export default {
       },
       openerr: {
         active: false,
-        message: ""
+        message: "",
+        color: "is-danger"
       }
     };
   },
@@ -98,7 +98,6 @@ export default {
     if (data === 1) {
       this.identifyCode = ""
       this.makeCode(this.identifyCodes, 4)
-      localStorage.setItem("ip",returnCitySN.cip)
     }else {
       this.$router.push("manage")
     }
@@ -169,10 +168,25 @@ export default {
         this.identifyCode +=
           this.identifyCodes[this.randomNum(0, this.identifyCodes.length)];
       }
-    },
-    closErr(){
-      this.openerr.active = false
     }
   }
 }
 </script>
+<style scoped>
+.gradient {
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 600% 600%;
+	animation: gradientBG 5s ease infinite;
+}
+@keyframes gradientBG {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+</style>

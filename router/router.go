@@ -28,7 +28,7 @@ func InitRouter(SECRET_KEY string) *gin.Engine {
 		api.POST("/addadmin", utils.VerifyMiddleware(), Admin.AddAdmin)
 		api.PUT("/repassword", utils.VerifyMiddleware(), Admin.ResetPassword)
 		api.DELETE("/deladmin", utils.VerifyMiddleware(), Admin.DeleteAdmin)
-		api.POST("/login", Admin.Sgin)
+		api.POST("/loginadmin", Admin.Sgin)
 		api.POST("/creatdcard", utils.VerifyMiddleware(), Card.CreateCard)
 		api.GET("/cardlist", utils.VerifyMiddleware(), Card.CardList)
 		api.GET("/checklogin", utils.VerifyMiddleware(), Admin.CheckLogin)

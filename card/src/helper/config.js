@@ -9,14 +9,17 @@ const images = [
   `${ImagesRoot}small/n_v224cd0671e0f4483d95f395494dd3a891.jpg`,
   `https://image.suning.cn/uimg/ZR/share_order/158501870837440052.jpg`
 ]
-const IP = localStorage.getItem("ip")
 const Api = {
-  'login': `${RootUrl}login`,
+  'login': `${RootUrl}loginadmin`,
   'checklogin': `${RootUrl}checklogin`,
+  'repassword': `${RootUrl}repassword`,
+  'creatdcard': `${RootUrl}creatdcard`,
   'jt': `https://api.uomg.com/api/rand.qinghua?format=json`,
-  'tianqi': `https://api.seniverse.com/v3/weather/now.json?key=faua8rceea8uoemu&location=${IP}&language=zh-Hans&unit=c`,
   'ip': 'https://api.uomg.com/api/visitor.info?skey=774740085',
   'city': 'https://api.map.baidu.com/location/ip?ak=OGNLmlzGl46KE7HU0hblDk2zXPPv0w5v&ip=121.30.139.214',
+}
+const makeIP = (IP) =>{
+  return `https://api.seniverse.com/v3/weather/now.json?key=faua8rceea8uoemu&location=${IP}&language=zh-Hans&unit=c`
 }
 
 export default {
@@ -26,5 +29,5 @@ export default {
   GlobalTitle,
   images,
   Api,
-  IP
+  makeIP
 }

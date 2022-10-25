@@ -1,10 +1,10 @@
-export default async (url = '', data = {}, type = 'GET', token = '') => {
-  type = type.toUpperCase()
+export default async (url = '', params = {}, method = 'GET', token = '') => {
+  method = method.toUpperCase()
   // 此处规定get请求的参数使用时放在data中，如同post请求
-  if (type === 'GET') {
+  if (method === 'GET') {
     let dataStr = ''
-    Object.keys(data).forEach(key => {
-      dataStr += key + '=' + data[key] + '&'
+    Object.keys(params).forEach(key => {
+      dataStr += key + '=' + params[key] + '&'
     })
 
     if (dataStr !== '') {
@@ -14,17 +14,16 @@ export default async (url = '', data = {}, type = 'GET', token = '') => {
   }
 
   let requestConfig = {
-    method: type,
-    
+    method: method,
   }
 
-  if (type === 'POST' || type === 'PUT' || type === 'DELETE') {
+  if (method === 'POST' || method === 'PUT' || method === 'DELETE') {
     requestConfig.headers = {
       Accept: '*/*',
       'Content-Type': 'application/json;charset=UTF-8',
     }
     Object.defineProperty(requestConfig, 'body', {
-      value: JSON.stringify(data)
+      value: JSON.stringify(params)
     })
   }
   if (token !== null && token.length === 64) {

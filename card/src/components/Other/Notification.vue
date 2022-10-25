@@ -1,5 +1,5 @@
 <template>
-  <div class="notification is-danger error" :style="{'top':hoverTop+'px'}" v-if="this.showData.active">
+  <div :class="'notification is-light error '+showData.color" :style="{'top':hoverTop+'px'}" v-if="this.showData.active">
     <button class="delete" @click="closErr"></button>
     <p>{{this.showData.message}}</p>
   </div>
@@ -18,10 +18,14 @@ export default defineComponent ({
       message: {
         type: String,
         default: ""
+      },
+      color:{
+        type: String,
+        default: "is-info"
       }
     }
   },
-  emits: ["update:active","update:message"],
+  emits: ["update:active","update:message","update:color"],
   setup(props, context){
     let _data = reactive({
       hoverTop: 0
@@ -32,6 +36,9 @@ export default defineComponent ({
     })
     watch(() => props.showData.message,(newValue) => {
       context.emit("update:message", newValue)
+    })
+    watch(() => props.showData.color,(newValue) => {
+      context.emit("update:color", newValue)
     })
     watch(() => _data.hoverTop,(newValue) => {
       _data.hoverTop = newValue

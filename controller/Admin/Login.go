@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	LevelDB "kaika/Leveldb"
 	"kaika/database"
 	"kaika/utils"
@@ -20,6 +21,7 @@ type Login struct {
 func Sgin(c *gin.Context) {
 	var form Login
 	if err := c.ShouldBind(&form); err != nil {
+		fmt.Println(form.UserName, form.Password)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  1,
 			"message": err.Error(),
