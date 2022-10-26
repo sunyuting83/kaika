@@ -11,9 +11,9 @@
           <router-link class="navbar-item" to="manage">
             首页
           </router-link>
-          <a class="navbar-item" href="admin.html">
+          <router-link class="navbar-item" to="cardlist">
             卡开记录
-          </a>
+          </router-link>
         </div>
       </div>
       <div class="navbar-end">

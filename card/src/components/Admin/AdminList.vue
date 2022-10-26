@@ -28,21 +28,21 @@
               <table class="table is-striped is-hoverable is-fullwidth is-narrow has-text-left	" v-else>
                 <thead>
                   <tr>
-                    <td>用户名</td>
+                    <td width="35%">用户名</td>
                     <td>状态</td>
                     <td>创建时间</td>
-                    <td>操作</td>
+                    <td width="30%">操作</td>
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-for="(item) in data" :key="item.id">
-                    <td width="35%">{{item.username}}</td>
+                    <td>{{item.username}}</td>
                     <td>
                       <span class="has-text-success" v-if="item.status === 0">正常</span>
                       <span class="has-text-danger" v-else>锁定</span>
                     </td>
-                    <td>{{FormatTime(item.createdtime)}}</td>
-                    <td width="35%">
+                    <td><FormaTime :DateTime="item.createdtime"></FormaTime></td>
+                    <td>
                       <div class="buttons">
                         <button class="button is-success is-small" @click="showModel(item.username)">修改密码</button>
                         <PopoButton
@@ -84,6 +84,8 @@ import NotIfication from "@/components/Other/Notification"
 import AddAdmin from "@/components/Admin/AddAdmin"
 import PopoButton from '@/components/Other/PopoButton'
 import PaginAtion from '@/components/Other/PaginAtion'
+import FormaTime from '@/components/Other/FormaTime'
+
 
 import Fetch from '@/helper/fetch'
 import CheckLogin from '@/helper/checkLogin'
@@ -91,7 +93,7 @@ import Config from '@/helper/config'
 import setStorage from '@/helper/setStorage'
 export default defineComponent({
   name: 'AdminList',
-  components: { ManageHeader, LoadIng, EmptyEd, ChangePassword, NotIfication, AddAdmin, PopoButton, PaginAtion },
+  components: { ManageHeader, LoadIng, EmptyEd, ChangePassword, NotIfication, AddAdmin, PopoButton, PaginAtion, FormaTime },
   setup() {
     let states = reactive({
       loading: false,
@@ -137,13 +139,6 @@ export default defineComponent({
         states.page = []
         states.loading = false
       }
-    }
-    const FormatTime = (timestamp) => {
-      var date = new Date(timestamp * 1000);
-      var Y = date.getFullYear() + '-'
-      var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'
-      var D = date.getDate() + ' '
-      return Y+M+D
     }
     /**
      * 
@@ -227,7 +222,6 @@ export default defineComponent({
 
     return {
       ...toRefs(states),
-      FormatTime,
       ShowMessage,
       showModel,
       showAddModel,

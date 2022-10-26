@@ -1,9 +1,9 @@
 <template>
-  <div v-if="page.length > 0">
+  <div v-if="page.length > 0" class="mb-5">
     <hr />
-    <nav class="pagination" role="navigation" aria-label="pagination">
-      <a class="pagination-previous" @click="setPreviousPage" title="This is the first page" :disabled="current !== 1 && page.length > 1?'true':'false'">上一页</a>
-      <a class="pagination-next" @click="setNextPage" :disabled="current !== page.length && page.length > 1?'true':'false'">下一页</a>
+    <nav class="pagination is-small" role="navigation" aria-label="pagination">
+      <a class="pagination-previous" @click="setPreviousPage">上一页</a>
+      <a class="pagination-next" @click="setNextPage">下一页</a>
       <ul class="pagination-list">
         <li v-for="(item) in page" :key="item">
           <a class="pagination-link" @click="()=>{setPage(item)}" :class="item === current ? 'is-current': ''" :aria-label="'Page '+item" :aria-current="item === current ? 'page': ''">{{item}}</a>
@@ -43,7 +43,7 @@ export default defineComponent({
       }
     }
     const setNextPage = () =>{
-      if (states.current !== states.page.length) {
+      if (states.current !== states.page.length && states.current < states.page.length) {
         states.current = states.current + 1
         props.GetData(states.current)
       }
