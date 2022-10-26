@@ -9,10 +9,12 @@
       <div class="card-content">
         <div class="content has-text-centered	min-heights" :style="listData.loading || listData.data.length <= 0 ? 'min-height: 14rem':'min-height: 11.3rem'">
           <div class="com__box" v-if="listData.loading" :style="listData.loading? 'margin-top:5rem':''">
-            <div class="loading"></div>
+            <LoadIng></LoadIng>
           </div>
           <div v-else>
-            <img :src="listData.image" alt="nothing" v-if="listData.data.length <= 0" />
+            <div v-if="listData.data.length <= 0">
+              <EmptyEd></EmptyEd>
+            </div>
             <table class="table is-striped is-clipped has-text-left	" v-else>
               <tbody>
                 <tr v-for="(item, index) in listData.data" :key="index">
@@ -38,8 +40,11 @@
 import { defineComponent } from 'vue'
 import useClipboard from 'vue-clipboard3'
 const { toClipboard } = useClipboard()
+import LoadIng from '@/components/Other/Loading'
+import EmptyEd from '@/components/Other/Empty'
 export default defineComponent({
   name: 'CreateCard',
+  components: { LoadIng, EmptyEd },
   data(){
     return {
       check: false
@@ -78,52 +83,5 @@ export default defineComponent({
   min-height: 11.3rem;
   height: 11.3rem;
   overflow-y: auto;
-}
-.loading {
-  width: 16px;
-  height: 16px;
-  box-shadow: 0 30px, 0 -30px;
-  border-radius: 4px;
-  background: currentColor;
-  display: inline-block;
-  position: relative;
-  color: #ddd;
-  left: -30px;
-  animation: loading-animation 2s ease infinite;
-}
-
-.loading::after,
-.loading::before {
-  content: "";
-  width: 16px;
-  height: 16px;
-  box-shadow: 0 30px, 0 -30px;
-  border-radius: 4px;
-  background: currentColor;
-  color: #ddd;
-  position: absolute;
-  left: 30px;
-  top: 0;
-  animation: loading-animation 2s 0.2s ease infinite;
-}
-
-.loading::before {
-  animation-delay: 0.4s;
-  left: 60px;
-}
-
-@keyframes loading-animation {
-  0% {
-    top: 0;
-    color: #ddd;
-  }
-  50% {
-    top: 30px;
-    color: rgba(255, 255, 255, 0.2);
-  }
-  100% {
-    top: 0;
-    color: #ddd;
-  }
 }
 </style>

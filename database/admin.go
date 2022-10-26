@@ -54,3 +54,24 @@ func (admin *Admin) DeleteOne(username string) {
 	// time.Sleep(time.Duration(100) * time.Millisecond)
 	Eloquent.Where("username = ?", username).Delete(&admin)
 }
+
+// Get Count
+func (admin *Admin) GetCount() (count int64, err error) {
+	if err = Eloquent.Model(&admin).Count(&count).Error; err != nil {
+		return
+	}
+	return
+}
+
+// Card List
+func (admin *Admin) GetAdminList(page int64) (admins []Admin, err error) {
+	p := makePage(page)
+	if err = Eloquent.
+		Select("id, username, status, createdtime").
+		Order("id desc").
+		Limit(100).Offset(p).
+		Find(&admins).Error; err != nil {
+		return
+	}
+	return
+}

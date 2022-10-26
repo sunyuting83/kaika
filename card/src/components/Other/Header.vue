@@ -31,15 +31,15 @@
           
               <div class="navbar-dropdown">
                 <div class="dropdown-item">
-                  <p>当前登陆用户 <strong>{{username}}</strong> <br /><span class="is-size-7">可以开卡 努力賺錢.</span></p>
+                  <p>当前登陆用户 <strong>{{openModal.username}}</strong> <br /><span class="is-size-7">可以开卡 努力賺錢.</span></p>
                 </div>
                 <hr class="dropdown-divider">
                 <a class="navbar-item" @click="showModel">
                   修改密码
                 </a>
-                <a class="navbar-item">
+                <router-link class="navbar-item" to="adminlist">
                   管理员管理
-                </a>
+                </router-link>
                 <hr class="navbar-divider">
                 <a class="navbar-item" @click="LogOut">
                   退出登陆
@@ -72,18 +72,17 @@ export default {
       logo: "",
       openModal:{
         active: false,
-        title: '修改密码'
+        username: ""
       },
       openerr: {
         active: false,
         message: ""
       },
-      username: ''
     }
   },
   mounted(){
     this.logo = Config.images[2]
-    this.username = localStorage.getItem('user')
+    this.openModal.username = localStorage.getItem('user')
   },
   methods:{
     async LogOut(){
@@ -99,3 +98,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+nav.navbar {
+  border-top: 4px solid #276cda;
+}
+</style>

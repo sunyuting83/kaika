@@ -3,7 +3,7 @@
     <div class="modal-background"></div>
     <div class="modal-card">
       <header class="modal-card-head">
-        <p class="modal-card-title">{{this.showData.title}}</p>
+        <p class="modal-card-title">修改密码</p>
         <button class="delete" aria-label="close" @click="closErr" v-if="loading ? false : true"></button>
       </header>
       <section class="modal-card-body">
@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import { reactive, toRefs, watch, defineComponent } from 'vue'
+import { reactive, toRefs, defineComponent } from 'vue'
 import Fetch from '@/helper/fetch'
 import Config from '@/helper/config'
 export default defineComponent ({
@@ -48,15 +48,14 @@ export default defineComponent ({
         type: Boolean,
         default: false
       },
-      title: {
+      username: {
         type: String,
         default: ""
       }
     },
     ShowMessage:Function
   },
-  emits: ["update:active","update:message","update:title", "update:ShowMessage"],
-  setup(props, context){
+  setup(props){
     let _data = reactive({
       loading: false,
       form:{
@@ -65,15 +64,6 @@ export default defineComponent ({
         passErr: false,
         passErrMessage: ''
       }
-    })
-    watch(() => props.showData.active,(newValue) => {
-      context.emit("update:active", newValue)
-    })
-    watch(() => props.showData.title,(newValue) => {
-      context.emit("update:title", newValue)
-    })
-    watch(() => _data.loading,(newValue) => {
-      _data.loading = newValue
     })
     const closErr = () => {
       const _this = props
@@ -108,7 +98,7 @@ export default defineComponent ({
       }
     }
     const postData = async() => {
-      const username = localStorage.getItem("user")
+      const username = props.showData.username
       const token = localStorage.getItem("token")
       const rpawsd = _data.form.repassword
       const data = {

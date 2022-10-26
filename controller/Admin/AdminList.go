@@ -8,11 +8,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CardList(c *gin.Context) {
+func AdminList(c *gin.Context) {
 	var page string = c.DefaultQuery("page", "0")
 	pageInt, _ := strconv.ParseInt(page, 10, 64)
-	var card database.Card
-	count, err := card.GetCount()
+	var admin database.Admin
+	count, err := admin.GetCount()
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"status":  1,
@@ -20,7 +20,7 @@ func CardList(c *gin.Context) {
 		})
 		return
 	}
-	dataList, err := card.GetCardList(pageInt)
+	dataList, err := admin.GetAdminList(pageInt)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"status":  1,

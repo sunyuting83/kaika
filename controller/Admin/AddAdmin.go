@@ -20,14 +20,14 @@ func AddAdmin(c *gin.Context) {
 		return
 	}
 
-	if len(form.UserName) <= 4 {
+	if len(form.UserName) < 4 {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"status":  1,
 			"message": "haven't username",
 		})
 		return
 	}
-	if len(form.Password) <= 8 {
+	if len(form.Password) < 8 {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"status":  1,
 			"message": "haven't password",
@@ -68,8 +68,10 @@ func AddAdmin(c *gin.Context) {
 		})
 		return
 	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"status":  0,
 		"message": "添加成功",
+		"data":    admin,
 	})
 }

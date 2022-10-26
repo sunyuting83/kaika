@@ -35,7 +35,6 @@
 </template>
 <script>
 import { defineComponent } from 'vue'
-import Config from '@/helper/config'
 import CreateCard from '@/components/Manage/CreateCard'
 import CardTable from '@/components/Manage/CardTable'
 export default defineComponent({
@@ -45,8 +44,7 @@ export default defineComponent({
     return {
       list:{
         loading: false,
-        data: [],
-        image: Config.images[3],
+        data: []
       }
     }
   },

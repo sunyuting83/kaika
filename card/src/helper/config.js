@@ -14,12 +14,27 @@ const Api = {
   'checklogin': `${RootUrl}checklogin`,
   'repassword': `${RootUrl}repassword`,
   'creatdcard': `${RootUrl}creatdcard`,
+  'adminlist': `${RootUrl}adminlist`,
+  'addadmin': `${RootUrl}addadmin`,
   'jt': `https://api.uomg.com/api/rand.qinghua?format=json`,
   'ip': 'https://api.uomg.com/api/visitor.info?skey=774740085',
   'city': 'https://api.map.baidu.com/location/ip?ak=OGNLmlzGl46KE7HU0hblDk2zXPPv0w5v&ip=121.30.139.214',
 }
 const makeIP = (IP) =>{
   return `https://api.seniverse.com/v3/weather/now.json?key=faua8rceea8uoemu&location=${IP}&language=zh-Hans&unit=c`
+}
+
+const makePopeData = (e, message, active = true)=> {
+  const target = e.target
+  const data = {
+    active: active,
+    message: message,
+    width: target.clientWidth,
+    height: target.clientHeight,
+    top: target.offsetTop,
+    left: target.offsetLeft
+  }
+  return data
 }
 
 export default {
@@ -29,5 +44,6 @@ export default {
   GlobalTitle,
   images,
   Api,
-  makeIP
+  makeIP,
+  makePopeData
 }

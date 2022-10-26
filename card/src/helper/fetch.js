@@ -26,7 +26,7 @@ export default async (url = '', params = {}, method = 'GET', token = '') => {
       value: JSON.stringify(params)
     })
   }
-  if (token !== null && token.length === 64) {
+  if (token !== null && token.length > 60) {
     requestConfig.headers = new Headers({
       Accept: '*/*',
       'Content-Type': 'application/json;charset=UTF-8',

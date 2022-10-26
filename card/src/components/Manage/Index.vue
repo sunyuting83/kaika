@@ -19,7 +19,7 @@ import Config from '@/helper/config'
 import setStorage from '@/helper/setStorage'
 import returnCitySN from 'returnCitySN'
 
-import ManageHeader from '@/components/Manage/Header'
+import ManageHeader from '@/components/Other/Header'
 import AdminBody from '@/components/Manage/AdminBody'
 import HeroWelcome from '@/components/Manage/HeroWelcome'
 

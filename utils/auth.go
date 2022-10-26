@@ -15,7 +15,7 @@ import (
 func VerifyMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.GetHeader("Authorization")
-		if len(token) == 71 {
+		if len(token) > 67 {
 			secret_key, _ := c.Get("secret_key")
 			SECRET_KEY := secret_key.(string)
 			token = token[7:]
