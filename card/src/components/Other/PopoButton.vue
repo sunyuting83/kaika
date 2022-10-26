@@ -2,7 +2,7 @@
 	<div>
 		<button class="button is-small" :class="color" @click="show">{{message}}</button>
 		<div class="hiddens" v-if="active">
-			<div class="ant-popover ant-popover-placement-top" :class="active ? '' : 'ant-popover-hidden'" :style="active ?`top: ${top}px; left: ${left}px; transform-origin: 50% 103px;`:''">
+			<div class="ant-popover ant-popover-placement-top" @click.stop :class="active ? '' : 'ant-popover-hidden'" :style="active ?`top: ${top}px; left: ${left}px; transform-origin: 50% 103px;`:''">
 				<div class="ant-popover-content">
 					<div class="ant-popover-arrow">
 					</div>
@@ -42,7 +42,7 @@
 	</div>
 </template>
 <script>
-import { reactive, toRefs, defineComponent } from 'vue'
+import { reactive, toRefs, onMounted, onUnmounted, defineComponent } from 'vue'
 
 export default defineComponent({
   name: "PopoButton",
@@ -56,16 +56,25 @@ export default defineComponent({
       active: false,
 			left: 0,
 			top: 0,
+			hidden: Function
+    })
+		onMounted(() => {
+      window.addEventListener('click', states.hidden)
+    })
+ 
+    onUnmounted(() => {
+      window.removeEventListener('click', states.hidden)
     })
 		const show = (e) => {
 			const t = e.target
-			states.left = t.offsetLeft + t.clientWidth
-			states.top = t.offsetTop - t.clientHeight - 6
+			states.left = t.offsetLeft - t.clientWidth - 6
+			states.top = t.offsetTop - (t.clientHeight * 3) - 6
 			states.active = !states.active
 		}
 		const hidden =() =>{
 			states.active = false
 		}
+		states.hidden = hidden
 		const submit =() => {
 			states.active = false
 			props.callBack()
@@ -263,7 +272,7 @@ export default defineComponent({
 	bottom:12px
 }
 .hiddens {
-  position: fixed;
+  position: absolute;
   width: 100%;
   height: 0px;
   left: 0px;

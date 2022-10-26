@@ -69,6 +69,7 @@
 </template>
 <script>
 import { reactive, toRefs, onMounted, defineComponent } from 'vue'
+import { useRouter } from 'vue-router'
 import ManageHeader from '@/components/Other/Header'
 import LoadIng from '@/components/Other/Loading'
 import EmptyEd from '@/components/Other/Empty'
@@ -98,14 +99,14 @@ export default defineComponent({
       currentTime: 0,
       SearchKey: ""
     })
-
+    const router = useRouter()
     onMounted(async() => {
       const data = await CheckLogin()
       if (data == 0) {
         GetData()
       }else{
         setStorage(false)
-        this.$router.push("/")
+        router.push("/")
       }
     })
     const GetData = async(page = 1) => {
