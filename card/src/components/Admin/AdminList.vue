@@ -46,9 +46,9 @@
                       <div class="buttons">
                         <button class="button is-success is-small" @click="showModel(item.username)">修改密码</button>
                         <PopoButton
-                          message="锁定" color="is-info" :callBack="lockIt" v-if="item.username !== username"></PopoButton>
+                          :message="item.status == 0?'锁定':'解锁'" color="is-info" :callBack="()=>{lockIt(item.id)}" v-if="item.username !== username"></PopoButton>
                         <PopoButton
-                          message="删除" color="is-danger" :callBack="deleteIt" v-if="item.username !== username"></PopoButton>
+                          message="删除" color="is-danger" :callBack="()=>{deleteIt(item.id)}" v-if="item.username !== username"></PopoButton>
                       </div>
                     </td>
                   </tr>
@@ -59,16 +59,7 @@
         </div>
       </div>
 
-      <hr />
-      <nav class="pagination" role="navigation" aria-label="pagination">
-        <a class="pagination-previous" @click="setPreviousPage" title="This is the first page" :disabled="current !== 1 && page.length > 1?'true':'false'">上一页</a>
-        <a class="pagination-next" @click="setNextPage" :disabled="current !== page.length && page.length > 1?'true':'false'">下一页</a>
-        <ul class="pagination-list">
-          <li v-for="(item) in page" :key="item">
-            <a class="pagination-link" @click="setPage(item)" :class="item === current ? 'is-current': ''" :aria-label="'Page '+item" :aria-current="item === current ? 'page': ''">{{item}}</a>
-          </li>
-        </ul>
-      </nav>
+      <PaginAtion v-if="data.length > 0" :total="total" :GetData="GetData"></PaginAtion>
     </div>
     <ChangePassword
       :showData="openModal"
@@ -92,6 +83,7 @@ import ChangePassword from "@/components/Other/ChangePassword"
 import NotIfication from "@/components/Other/Notification"
 import AddAdmin from "@/components/Admin/AddAdmin"
 import PopoButton from '@/components/Other/PopoButton'
+import PaginAtion from '@/components/Other/PaginAtion'
 
 import Fetch from '@/helper/fetch'
 import CheckLogin from '@/helper/checkLogin'
@@ -99,14 +91,12 @@ import Config from '@/helper/config'
 import setStorage from '@/helper/setStorage'
 export default defineComponent({
   name: 'AdminList',
-  components: { ManageHeader, LoadIng, EmptyEd, ChangePassword, NotIfication, AddAdmin, PopoButton },
+  components: { ManageHeader, LoadIng, EmptyEd, ChangePassword, NotIfication, AddAdmin, PopoButton, PaginAtion },
   setup() {
     let states = reactive({
       loading: false,
       data: [],
       total: 0,
-      current: 1,
-      page: [],
       username: "",
       openModal:{
         active: false,
@@ -133,42 +123,13 @@ export default defineComponent({
         this.$router.push("/")
       }
     })
-
-    const makePage = (t) => {
-      let x = []
-      const p = Math.ceil(t/100)
-      for (let i = 0; i < p; i++) {
-        x = [...x, i + 1]
-      }
-      return x
-    }
-
-    const setPage = (p) =>{
-      if (p !== states.current && p >= 1) {
-        states.current = p
-        GetData()
-      }
-    }
-    const setNextPage = () =>{
-      if (this.states !== states.page.length) {
-        states.current = states.current + 1
-        GetData()
-      }
-    }
-    const setPreviousPage = () =>{
-      if (states.current > 1) {
-        states.current = states.current - 1
-        GetData()
-      }
-    }
-    const GetData = async() => {
+    const GetData = async(page = 1) => {
       const token = localStorage.getItem("token")
-      const d = await Fetch(Config.Api.adminlist, {}, 'GET', token)
+      const d = await Fetch(Config.Api.adminlist, {page:page}, 'GET', token)
       states.loading = true
       if (d.status == 0) {
         states.data = d.data
         states.total = d.total
-        states.page = makePage(d.total)
         states.loading = false
       }else{
         states.data = []
@@ -189,13 +150,30 @@ export default defineComponent({
      * @param {*} e message用到的值
      * @param {*} status 0默认不传参 1添加-加入列表 2锁定-替换列表值 3删除-filter值
      */
-    const ShowMessage = (e, status = 0) => {
+    const ShowMessage = (e, status = 0, id=0) => {
       states.openerr.active = e.active
       states.openerr.message = e.message
       states.openerr.color = e.color
       switch (status) {
         case 1:
           states.data = [...states.data, e.data]
+          break;
+        case 2:
+          states.data = states.data.map((e)=>{
+            if(e.id == id) {
+              if(e.status === 0) {
+                e.status = 1
+              }else {
+                e.status = 0
+              }
+            }
+            return e
+          })
+          break;
+        case 3:
+          states.data = states.data.filter((e)=>{
+            if(e.id !== id) return e
+          })
           break;
         default:
           break;
@@ -208,24 +186,54 @@ export default defineComponent({
     const showAddModel = () => {
       states.openAddModal.active = true
     }
-    const lockIt = () => {
-      console.log("e")
+    const lockIt = async(id) => {
+      const token = localStorage.getItem("token")
+      const d = await Fetch(Config.Api.upstatus, {id: id}, 'PUT', token)
+      if (d.status == 0) {
+        const data = {
+          active: true,
+          message: d.message,
+          color: 'is-success'
+        }
+        ShowMessage(data, 2, id)
+      }else{
+        const data = {
+          active: true,
+          message: d.message,
+          color: 'is-danger'
+        }
+        ShowMessage(data, 0)
+      }
     }
-    const deleteIt = () => {
-      console.log("e")
+    const deleteIt = async(id) => {
+      const token = localStorage.getItem("token")
+      const d = await Fetch(Config.Api.deladmin, {id: id}, 'DELETE', token)
+      if (d.status == 0) {
+        const data = {
+          active: true,
+          message: d.message,
+          color: 'is-success'
+        }
+        ShowMessage(data, 3, id)
+      }else{
+        const data = {
+          active: true,
+          message: d.message,
+          color: 'is-danger'
+        }
+        ShowMessage(data, 0)
+      }
     }
 
     return {
       ...toRefs(states),
-      setPage,
-      setNextPage,
-      setPreviousPage,
       FormatTime,
       ShowMessage,
       showModel,
       showAddModel,
       lockIt,
-      deleteIt
+      deleteIt,
+      GetData
     }
   },
 })

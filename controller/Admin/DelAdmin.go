@@ -8,7 +8,7 @@ import (
 )
 
 type User struct {
-	UserName string `form:"username" json:"username" xml:"username"  binding:"required"`
+	ID int64 `form:"id" json:"id" xml:"id"  binding:"required"`
 }
 
 func DeleteAdmin(c *gin.Context) {
@@ -20,15 +20,8 @@ func DeleteAdmin(c *gin.Context) {
 		})
 		return
 	}
-	if len(form.UserName) <= 4 {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"status":  1,
-			"message": "haven't username",
-		})
-		return
-	}
 	var admin database.Admin
-	user, err := admin.CheckUserName(form.UserName)
+	user, err := admin.CheckID(form.ID)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"status":  1,
@@ -36,8 +29,8 @@ func DeleteAdmin(c *gin.Context) {
 		})
 		return
 	}
-	admin.DeleteOne(form.UserName)
-	c.JSON(http.StatusUnauthorized, gin.H{
+	admin.DeleteOne(form.ID)
+	c.JSON(http.StatusOK, gin.H{
 		"status":   0,
 		"message":  "成功删除管理员",
 		"username": user.Username,

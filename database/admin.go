@@ -37,6 +37,14 @@ func (admin *Admin) CheckUserName(username string) (admins Admin, err error) {
 	return
 }
 
+// Check ID
+func (admin *Admin) CheckID(id int64) (admins Admin, err error) {
+	if err = Eloquent.First(&admins, "id = ?", id).Error; err != nil {
+		return
+	}
+	return
+}
+
 // Reset Password
 func (admin *Admin) ResetPassword(username string) (admins Admin, err error) {
 	// time.Sleep(time.Duration(100) * time.Millisecond)
@@ -49,10 +57,22 @@ func (admin *Admin) ResetPassword(username string) (admins Admin, err error) {
 	return
 }
 
-// Delete Admin
-func (admin *Admin) DeleteOne(username string) {
+// Update Status
+func (admin *Admin) UpStatusOne(id int64) (admins Admin, err error) {
 	// time.Sleep(time.Duration(100) * time.Millisecond)
-	Eloquent.Where("username = ?", username).Delete(&admin)
+	if err = Eloquent.Select([]string{"id", "status"}).First(&admins, id).Error; err != nil {
+		return
+	}
+	if err = Eloquent.Model(&admins).Updates(&admin).Error; err != nil {
+		return
+	}
+	return
+}
+
+// Delete Admin
+func (admin *Admin) DeleteOne(id int64) {
+	// time.Sleep(time.Duration(100) * time.Millisecond)
+	Eloquent.Where("id = ?", id).Delete(&admin)
 }
 
 // Get Count
