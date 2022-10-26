@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import AppIndex from '@/components/Index/Index'
-import AppManage from '@/components/Admin/Index'
+import AppManage from '@/components/Manage/Index'
 
 const routerHistory = createWebHistory()
 

@@ -82,7 +82,7 @@ func Sgin(c *gin.Context) {
 		})
 		return
 	}
-	T := time.Now().Format("202210100000")
+	T := time.Now().Format("20060102150411")
 	token := utils.MD5(strings.Join([]string{login.Username, login.Password, T}, ""))
 	// var ttl int64 = 1000 * 60 * 60 * 24 * 90
 	var ttl int64 = 60 * 60 * 24 * 90 // ttl以秒为单位

@@ -19,9 +19,9 @@ import Config from '@/helper/config'
 import setStorage from '@/helper/setStorage'
 import returnCitySN from 'returnCitySN'
 
-import ManageHeader from '@/components/Admin/Header'
-import AdminBody from '@/components/Admin/AdminBody'
-import HeroWelcome from '@/components/Admin/HeroWelcome'
+import ManageHeader from '@/components/Manage/Header'
+import AdminBody from '@/components/Manage/AdminBody'
+import HeroWelcome from '@/components/Manage/HeroWelcome'
 
 export default {
   name: 'AppManage',

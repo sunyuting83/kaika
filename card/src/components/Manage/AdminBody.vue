@@ -36,8 +36,8 @@
 <script>
 import { defineComponent } from 'vue'
 import Config from '@/helper/config'
-import CreateCard from '@/components/Admin/CreateCard'
-import CardTable from '@/components/Admin/CardTable'
+import CreateCard from '@/components/Manage/CreateCard'
+import CardTable from '@/components/Manage/CardTable'
 export default defineComponent({
   name: 'AdminBody',
   components: { CreateCard, CardTable },
