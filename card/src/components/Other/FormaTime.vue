@@ -19,8 +19,8 @@ export default defineComponent({
       const D = date.getDate()
       const H = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()
       const minute = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
-      const S = date.getSeconds() < 10 ? `0${date.getSeconds()}` : date.getSeconds()
-      return `${Y}-${M}-${D} ${H}:${minute}:${S}`
+      // const S = date.getSeconds() < 10 ? `0${date.getSeconds()}` : date.getSeconds()
+      return `${Y}-${M}-${D} ${H}:${minute}`
     }
     return {
       FormatTime

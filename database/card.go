@@ -51,6 +51,14 @@ func (card *Card) GetCardList(page int64) (cards []Card, err error) {
 	return
 }
 
+// Search
+func (card *Card) Search(c string) (cards Card, err error) {
+	if err = Eloquent.First(&cards, "card = ?", c).Error; err != nil {
+		return
+	}
+	return
+}
+
 // makePage make page
 func makePage(p int64) int64 {
 	p = p - 1

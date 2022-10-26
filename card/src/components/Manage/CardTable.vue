@@ -3,7 +3,7 @@
     <div class="card events-card">
       <header class="card-header">
         <p class="card-header-title">
-          新卡记录
+          {{listData.title}}
         </p>
       </header>
       <div class="card-content">
@@ -58,7 +58,7 @@ export default defineComponent({
       data: {
         type: Array
       },
-      image: {
+      title: {
         type: String
       }
     }

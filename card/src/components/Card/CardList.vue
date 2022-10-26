@@ -36,9 +36,9 @@
                   <tr>
                     <td width="35%">卡号</td>
                     <td>剩余时间</td>
-                    <td>到期事件</td>
+                    <td>到期时间</td>
                     <td>创建时间</td>
-                    <td width="15%">操作</td>
+                    <!-- <td width="15%">操作</td> -->
                   </tr>
                 </thead>
                 <tbody>
@@ -47,11 +47,11 @@
                     <td>{{surplus(item.updatetime)}}</td>
                     <td><FormaTime :DateTime="item.updatetime"></FormaTime></td>
                     <td><FormaTime :DateTime="item.createdtime"></FormaTime></td>
-                    <td>
+                    <!-- <td>
                       <div class="buttons">
                         <button class="button is-success is-small">续费</button>
                       </div>
-                    </td>
+                    </td> -->
                   </tr>
                 </tbody>
               </table>

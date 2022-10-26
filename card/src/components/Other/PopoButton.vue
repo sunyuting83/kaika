@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<button class="button is-small" :class="color" @click="show">{{message}}</button>
+		<button class="button is-small" :class="color" @click="show" @click.stop>{{message}}</button>
 		<div class="hiddens" v-if="active">
 			<div class="ant-popover ant-popover-placement-top" @click.stop :class="active ? '' : 'ant-popover-hidden'" :style="active ?`top: ${top}px; left: ${left}px; transform-origin: 50% 103px;`:''">
 				<div class="ant-popover-content">

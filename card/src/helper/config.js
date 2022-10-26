@@ -20,6 +20,7 @@ const Api = {
   'upstatus': `${RootUrl}upstatus`,
   'cardlist': `${RootUrl}cardlist`,
   'currentTime': `${RootUrl}datetime`,
+  'search': `${RootUrl}search`,
   'jt': `https://api.uomg.com/api/rand.qinghua?format=json`,
   'ip': 'https://api.uomg.com/api/visitor.info?skey=774740085',
   'city': 'https://api.map.baidu.com/location/ip?ak=OGNLmlzGl46KE7HU0hblDk2zXPPv0w5v&ip=121.30.139.214',

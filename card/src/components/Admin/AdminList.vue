@@ -38,7 +38,7 @@
                   <tr v-for="(item) in data" :key="item.id">
                     <td>{{item.username}}</td>
                     <td>
-                      <span class="has-text-success" v-if="item.status === 0">正常</span>
+                      <span class="has-text-success" v-if="item.fuck === '0'">正常</span>
                       <span class="has-text-danger" v-else>锁定</span>
                     </td>
                     <td><FormaTime :DateTime="item.createdtime"></FormaTime></td>
@@ -46,7 +46,7 @@
                       <div class="buttons">
                         <button class="button is-success is-small" @click="showModel(item.username)">修改密码</button>
                         <PopoButton
-                          :message="item.status == 0?'锁定':'解锁'" color="is-info" :callBack="()=>{lockIt(item.id)}" v-if="item.username !== username"></PopoButton>
+                          :message="item.fuck === '0'?'锁定':'解锁'" color="is-info" :callBack="()=>{lockIt(item.id)}" v-if="item.username !== username"></PopoButton>
                         <PopoButton
                           message="删除" color="is-danger" :callBack="()=>{deleteIt(item.id)}" v-if="item.username !== username"></PopoButton>
                       </div>
@@ -157,10 +157,10 @@ export default defineComponent({
         case 2:
           states.data = states.data.map((e)=>{
             if(e.id == id) {
-              if(e.status === 0) {
-                e.status = 1
+              if(e.fuck === '0') {
+                e.fuck = '1'
               }else {
-                e.status = 0
+                e.fuck = '0'
               }
             }
             return e
@@ -168,7 +168,7 @@ export default defineComponent({
           break;
         case 3:
           states.data = states.data.filter((e)=>{
-            if(e.id !== id) return e
+            return e.id !== id
           })
           break;
         default:
@@ -210,7 +210,7 @@ export default defineComponent({
           message: d.message,
           color: 'is-success'
         }
-        ShowMessage(data, 3, id)
+        ShowMessage(data, 3, d.id)
       }else{
         const data = {
           active: true,

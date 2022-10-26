@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"kaika/database"
 	"net/http"
 	"strings"
@@ -18,9 +19,9 @@ func UpStatusAdmin(c *gin.Context) {
 		return
 	}
 	var (
-		admin     database.Admin
-		Status    int    = 1
-		StatusStr string = "锁定"
+		admin   database.Admin
+		Fuck    string = "1"
+		FuckStr string = "锁定"
 	)
 	user, err := admin.CheckID(form.ID)
 	if err != nil {
@@ -30,23 +31,24 @@ func UpStatusAdmin(c *gin.Context) {
 		})
 		return
 	}
-	if user.Status == 1 {
-		Status = 0
-		StatusStr = "解锁"
+	if user.Fuck == "1" {
+		fmt.Println(user.Fuck)
+		Fuck = "0"
+		FuckStr = "解锁"
 	}
-	admin.Status = Status
-	a, err := admin.UpStatusOne(user.ID)
+	admin.Fuck = Fuck
+	a, err := admin.ResetPassword(user.Username)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"status":  1,
 			"message": err.Error(),
-			"user":    a,
+			"user":    a.Fuck,
 		})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"status":  0,
-		"message": strings.Join([]string{"成功", StatusStr, "管理员"}, ""),
-		"user":    a,
+		"message": strings.Join([]string{"成功", FuckStr, "管理员"}, ""),
+		"user":    a.Fuck,
 	})
 }

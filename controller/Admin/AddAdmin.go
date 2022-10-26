@@ -57,7 +57,7 @@ func AddAdmin(c *gin.Context) {
 	T := time.Now().Unix()
 	admin.Username = form.UserName
 	admin.Password = PASSWD
-	admin.Status = 0
+	admin.Fuck = "0"
 	admin.UpdateTime = T
 	admin.CreatedTime = T
 	err = admin.Insert()

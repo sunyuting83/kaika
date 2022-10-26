@@ -31,8 +31,8 @@ func DeleteAdmin(c *gin.Context) {
 	}
 	admin.DeleteOne(form.ID)
 	c.JSON(http.StatusOK, gin.H{
-		"status":   0,
-		"message":  "成功删除管理员",
-		"username": user.Username,
+		"status":  0,
+		"message": "成功删除管理员",
+		"id":      user.ID,
 	})
 }

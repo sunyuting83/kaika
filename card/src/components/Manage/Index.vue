@@ -67,8 +67,3 @@ export default {
   },
 }
 </script>
-<style scoped>
-nav.navbar {
-  border-top: 4px solid #276cda;
-}
-</style>

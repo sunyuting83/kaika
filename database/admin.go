@@ -5,7 +5,7 @@ type Admin struct {
 	ID          int64  `json:"id" gorm:"primary_key, column:id"`
 	Username    string `json:"username" gorm:"varchar(128);index:idx_username_id;column:username"`
 	Password    string `json:"password" gorm:"column:password"`
-	Status      int    `json:"status" gorm:"column:status"`
+	Fuck        string `json:"fuck" gorm:"column:fuck"`
 	UpdateTime  int64  `json:"updatetime" gorm:"column:updatetime"`
 	CreatedTime int64  `json:"createdtime" gorm:"column:createdtime"`
 }
@@ -23,7 +23,7 @@ func (admin *Admin) Insert() error {
 
 // login
 func (admin *Admin) CheckAdminLogin(username, password string) (admins Admin, err error) {
-	if err = Eloquent.First(&admins, "username = ? AND status = ? AND password = ?", username, 0, password).Error; err != nil {
+	if err = Eloquent.First(&admins, "username = ? AND fuck = ? AND password = ?", username, "0", password).Error; err != nil {
 		return
 	}
 	return
@@ -59,8 +59,7 @@ func (admin *Admin) ResetPassword(username string) (admins Admin, err error) {
 
 // Update Status
 func (admin *Admin) UpStatusOne(id int64) (admins Admin, err error) {
-	// time.Sleep(time.Duration(100) * time.Millisecond)
-	if err = Eloquent.Select([]string{"id", "status"}).First(&admins, id).Error; err != nil {
+	if err = Eloquent.First(&admins, "id = ?", id).Error; err != nil {
 		return
 	}
 	if err = Eloquent.Model(&admins).Updates(&admin).Error; err != nil {
@@ -87,7 +86,7 @@ func (admin *Admin) GetCount() (count int64, err error) {
 func (admin *Admin) GetAdminList(page int64) (admins []Admin, err error) {
 	p := makePage(page)
 	if err = Eloquent.
-		Select("id, username, status, createdtime").
+		Select("id, username, fuck, createdtime").
 		Order("id desc").
 		Limit(100).Offset(p).
 		Find(&admins).Error; err != nil {

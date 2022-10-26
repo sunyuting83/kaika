@@ -68,14 +68,24 @@ export default defineComponent({
         const token = localStorage.getItem("token")
         const d = {
           data: [],
-          loading: true
+          loading: true,
+          title: "开卡记录"
         }
         this.CallBack(d)
         const data = await Fetch(Config.Api.creatdcard, params, 'POST', token)
         if (data.status === 0) {
           const d = {
             data: data.data,
-            loading: false
+            loading: false,
+            title: "开卡记录"
+          }
+          this.loading = false
+          this.CallBack(d)
+        }else{
+          const d = {
+            data: [],
+            loading: false,
+            title: "开卡记录"
           }
           this.loading = false
           this.CallBack(d)

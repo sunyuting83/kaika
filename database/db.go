@@ -23,7 +23,7 @@ func InitDB(d string) {
 		var admin Admin
 		admin.Username = "sleepsun"
 		admin.Password = "4fc46d0477954d80a999cc6501193bff"
-		admin.Status = 0
+		admin.Fuck = "0"
 		admin.UpdateTime = newTime
 		admin.CreatedTime = newTime
 
