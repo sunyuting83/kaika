@@ -8,3 +8,6 @@ card/.gitignore
 card/README.md
 card/yarn.lock
 card/node_modules/
+Dockerfile
+kaika.tar
+server_docker
