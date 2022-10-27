@@ -40,6 +40,7 @@ export default {
     }
   },
   async mounted(){
+    document.title = `${Config.GlobalTitle}-功能首页`
     localStorage.setItem("ip",returnCitySN.cip)
     const data = await CheckLogin()
     if (data == 0) {

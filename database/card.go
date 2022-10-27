@@ -51,6 +51,25 @@ func (card *Card) GetCardList(page int64) (cards []Card, err error) {
 	return
 }
 
+// Check ID
+func (card *Card) CheckID(id int64) (cards Card, err error) {
+	if err = Eloquent.First(&cards, "id = ?", id).Error; err != nil {
+		return
+	}
+	return
+}
+
+// Updata to UpDateTime
+func (card *Card) UpDateTime(id int64) (cards Card, err error) {
+	if err = Eloquent.First(&cards, "id = ?", id).Error; err != nil {
+		return
+	}
+	if err = Eloquent.Model(&cards).Updates(&card).Error; err != nil {
+		return
+	}
+	return
+}
+
 // Search
 func (card *Card) Search(c string) (cards Card, err error) {
 	if err = Eloquent.First(&cards, "card = ?", c).Error; err != nil {

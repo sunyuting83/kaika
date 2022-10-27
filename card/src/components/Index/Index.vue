@@ -94,6 +94,7 @@ export default {
     };
   },
   async mounted() {
+    document.title = `${Config.GlobalTitle}-登陆`
     const data = await CheckLogin()
     if (data === 1) {
       this.identifyCode = ""

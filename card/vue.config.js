@@ -30,7 +30,7 @@ module.exports = {
       entry: 'src/main.js',
       template: 'public/index.html',
       filename: 'index.html',
-      title: 'admin',
+      title: '自动发卡后台管理',
       chunks: ['chunk-vendors', 'chunk-common', 'index'],
       cdn: cdn
     }

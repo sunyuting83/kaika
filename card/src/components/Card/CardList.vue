@@ -38,7 +38,7 @@
                     <td>剩余时间</td>
                     <td>到期时间</td>
                     <td>创建时间</td>
-                    <!-- <td width="15%">操作</td> -->
+                    <td width="15%">操作</td>
                   </tr>
                 </thead>
                 <tbody>
@@ -47,11 +47,11 @@
                     <td>{{surplus(item.updatetime)}}</td>
                     <td><FormaTime :DateTime="item.updatetime"></FormaTime></td>
                     <td><FormaTime :DateTime="item.createdtime"></FormaTime></td>
-                    <!-- <td>
+                    <td>
                       <div class="buttons">
-                        <button class="button is-success is-small">续费</button>
+                        <button class="button is-success is-small" @click="(()=>showModel(item.card))">续费</button>
                       </div>
-                    </td> -->
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -65,6 +65,9 @@
     <NotIfication
       :showData="openerr">
     </NotIfication>
+    <RenewalCard
+      :showData="openModal"
+      :ShowMessage="ShowMessage"></RenewalCard>
   </div>
 </template>
 <script>
@@ -76,6 +79,7 @@ import EmptyEd from '@/components/Other/Empty'
 import NotIfication from "@/components/Other/Notification"
 import PaginAtion from '@/components/Other/PaginAtion'
 import FormaTime from '@/components/Other/FormaTime'
+import RenewalCard from '@/components/Other/Renewal'
 
 
 import Fetch from '@/helper/fetch'
@@ -84,7 +88,7 @@ import Config from '@/helper/config'
 import setStorage from '@/helper/setStorage'
 export default defineComponent({
   name: 'CardList',
-  components: { ManageHeader, LoadIng, EmptyEd, NotIfication, PaginAtion, FormaTime },
+  components: { ManageHeader, LoadIng, EmptyEd, NotIfication, PaginAtion, FormaTime, RenewalCard },
   setup() {
     let states = reactive({
       loading: false,
@@ -94,13 +98,19 @@ export default defineComponent({
       openerr: {
         active: false,
         message: "",
-        color: ""
+        color: "",
+        newtime: 0,
       },
       currentTime: 0,
-      SearchKey: ""
+      SearchKey: "",
+      openModal:{
+        active: false,
+        card: ""
+      }
     })
     const router = useRouter()
     onMounted(async() => {
+      document.title = `${Config.GlobalTitle}-卡号列表`
       const data = await CheckLogin()
       if (data == 0) {
         GetData()
@@ -158,13 +168,28 @@ export default defineComponent({
       states.SearchKey = ""
       states.data = states.temp
     }
+    const ShowMessage = (e) => {
+      states.openerr = e
+      states.data = states.data.map((el)=>{
+        if (el.id == e.id) {
+          el.updatetime = e.newtime
+        }
+        return el
+      })
+    }
+    const showModel = (e) => {
+      states.openModal.card = e
+      states.openModal.active = true
+    }
 
     return {
       ...toRefs(states),
       surplus,
       GetData,
       Search,
-      Clean
+      Clean,
+      ShowMessage,
+      showModel
     }
   },
 })

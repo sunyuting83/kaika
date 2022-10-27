@@ -116,6 +116,7 @@ export default defineComponent({
     })
     const router = useRouter()
     onMounted(async() => {
+      document.title = `${Config.GlobalTitle}-管理员管理`
       const data = await CheckLogin()
       if (data == 0) {
         const username = localStorage.getItem('user')

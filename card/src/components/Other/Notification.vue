@@ -67,7 +67,7 @@ export default defineComponent ({
 
 <style scoped>
 .error {
-  position:absolute;
+  position:fixed;
   right: 0px;
   width: 240px;
   z-index: 9999999999;

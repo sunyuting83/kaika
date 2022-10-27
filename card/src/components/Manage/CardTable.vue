@@ -19,6 +19,7 @@
               <tbody>
                 <tr v-for="(item, index) in listData.data" :key="index">
                   <td>{{item}}</td>
+                  <td v-if="listData.title === '搜索记录'"><button class="button is-success is-small" @click="(()=>showModel(item))">续费</button></td>
                 </tr>
               </tbody>
             </table>
@@ -34,6 +35,13 @@
         </a>
       </footer>
     </div>
+    <RenewalCard
+      :showData="openModal"
+      :ShowMessage="ShowMessage"></RenewalCard>
+    
+    <NotIfication
+      :showData="openerr">
+    </NotIfication>
   </div>
 </template>
 <script>
@@ -42,12 +50,23 @@ import useClipboard from 'vue-clipboard3'
 const { toClipboard } = useClipboard()
 import LoadIng from '@/components/Other/Loading'
 import EmptyEd from '@/components/Other/Empty'
+import RenewalCard from '@/components/Other/Renewal'
+import NotIfication from "@/components/Other/Notification"
 export default defineComponent({
   name: 'CreateCard',
-  components: { LoadIng, EmptyEd },
+  components: { LoadIng, EmptyEd, RenewalCard, NotIfication },
   data(){
     return {
-      check: false
+      check: false,
+      openerr: {
+        active: false,
+        message: "",
+        color: ""
+      },
+      openModal:{
+        active: false,
+        card: ""
+      }
     }
   },
   props: {
@@ -73,6 +92,13 @@ export default defineComponent({
       data = data.replace(/(^\r\n+)|(\r\n+$)/g, "")
       await toClipboard(data)
       this.check = true
+    },
+    ShowMessage(e){
+      this.openerr = e
+    },
+    showModel(e){
+      this.openModal.card = e
+      this.openModal.active = true
     }
   }
 })
