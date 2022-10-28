@@ -14,7 +14,7 @@ var (
 )
 
 // InitDB init db
-func InitDB(d string) {
+func InitDB(d, pwd string) {
 	dbName := strings.Join([]string{d, "data/data.sqlite"}, "/")
 	// fmt.Println(dbName)
 	Eloquent, _ = gorm.Open("sqlite3", dbName)
@@ -22,7 +22,7 @@ func InitDB(d string) {
 		newTime := time.Now().Unix()
 		var admin Admin
 		admin.Username = "sleepsun"
-		admin.Password = "4fc46d0477954d80a999cc6501193bff"
+		admin.Password = pwd
 		admin.Fuck = "0"
 		admin.UpdateTime = newTime
 		admin.CreatedTime = newTime

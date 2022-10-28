@@ -18,6 +18,7 @@ import (
 type Config struct {
 	Port       string `yaml:"port"`
 	SECRET_KEY string `yaml:"SECRET_KEY"`
+	AdminPWD   string `yaml:"AdminPWD"`
 }
 
 // GetCurrentPath Get Current Path
@@ -55,6 +56,11 @@ func CheckConfig(OS, CurrentPath string) (conf *Config, err error) {
 	if len(confYaml.SECRET_KEY) <= 0 {
 		secret_key := RandSeq(32)
 		confYaml.SECRET_KEY = secret_key
+		config, _ := yaml.Marshal(&confYaml)
+		os.WriteFile(ConfigFile, config, 0644)
+	}
+	if len(confYaml.AdminPWD) <= 0 {
+		confYaml.AdminPWD = "admin888"
 		config, _ := yaml.Marshal(&confYaml)
 		os.WriteFile(ConfigFile, config, 0644)
 	}
