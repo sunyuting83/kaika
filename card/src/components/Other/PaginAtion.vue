@@ -2,8 +2,8 @@
   <div v-if="page.length > 0" class="mb-5">
     <hr />
     <nav class="pagination is-small" role="navigation" aria-label="pagination">
-      <a class="pagination-previous" @click="setPreviousPage">上一页</a>
-      <a class="pagination-next" @click="setNextPage">下一页</a>
+      <button class="button pagination-previous" @click="setPreviousPage" title="This is the first page" :disabled="current == 1?true:false">上一页</button>
+      <button class="button pagination-next" @click="setNextPage" :disabled="current !== page.length && page.length > 1?false:true">下一页</button>
       <ul class="pagination-list">
         <li v-for="(item) in page" :key="item">
           <a class="pagination-link" @click="()=>{setPage(item)}" :class="item === current ? 'is-current': ''" :aria-label="'Page '+item" :aria-current="item === current ? 'page': ''">{{item}}</a>
